@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}
+<div class="jumbotron">
+    <div class="container">
+        <h1 class="display-2">Django-Blog</h1>
+        <p class="lead">A simple blog utilizing the Django web framework.</p>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item active" aria-current="page">Blog</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 col-md-3">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="basic-addon1">
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    Categories
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        {% for tag in tagset %}
+                            <a href="{% url 'tag' tag=tag.name %}" class="list-group-item">{{ tag.name|title }}</a>
+                        {% endfor %}
+                            <a href="{% url 'home' %}" class="list-group-item"><small>Show all</small></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-9">
+            {% for post in queryset %}
+            <div class="row my-2">
+                <div class="col-sm-12 col-md-3 text-center">
+                    <img src="{{ post.image.url }}" class="img-thumbnail" height="200" width="200">
+                </div>
+                <div class="col-sm-12 col-md-9">
+                    <h2><a href="{% url 'item' slug=post.slug %}">{{ post.title|title }}</a></h2>
+                    <p>{{ post.text_body|truncatechars:250 }}<a href="{% url 'item' slug=post.slug %}">Read more</a></p>
+                </div>
+            </div>
+            <hr>
+            {% endfor %}
+            <div class="pagination">
+                    <span class="step-links">
+                        {% if queryset.has_previous %}
+                            <a href="?page=1">&laquo; first</a>
+                            <a href="?page={{ queryset.previous_page_number }}">previous</a>
+                        {% endif %}
+                
+                        <span class="current">
+                            Page {{ queryset.number }} of {{ queryset.paginator.num_pages }}.
+                        </span>
+                
+                        {% if queryset.has_next %}
+                            <a href="?page={{ queryset.next_page_number }}">next</a>
+                            <a href="?page={{ queryset.paginator.num_pages }}">last &raquo;</a>
+                        {% endif %}
+                    </span>
+                </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
